@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Click Counter{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 20px;">
+    <h1>Click Counter</h1>
+
+    <div style="font-size: 42px; margin: 20px 0; font-weight: bold;">
+        {{ counter }}
+    </div>
+
+    <form action="{{ url_for('reset_counter') }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn-logout">Reset Counter</button>
+    </form>
+</div>
+{% endblock %}

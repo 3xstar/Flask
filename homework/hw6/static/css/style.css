@@ -1,0 +1,301 @@
+/* Подключение пиксельного ретро-шрифта */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+    --bg-color: #1a0536;
+    --panel-bg: #280f47;
+    --neon-purple: #f43f5e;
+    --contrast-yellow: #ffff00;
+    --contrast-cyan: #00ffff;
+    --accent-green: #39ff14;
+    --text-main: #ffffff;
+}
+
+/* --- ЯРКИЙ ПИКСЕЛЬНЫЙ ФОН (статичный, без анимации) --- */
+body {
+    background-color: var(--bg-color);
+    background-image:
+        linear-gradient(rgba(217, 70, 239, 0.15) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(217, 70, 239, 0.15) 2px, transparent 2px),
+        linear-gradient(180deg, rgba(217, 70, 239, 0.2) 0%, rgba(26, 5, 54, 0.5) 100%);
+    background-size: 32px 32px, 32px 32px, 100% 100%;
+    font-family: 'Press Start 2P', monospace;
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* --- CRT-ЭФФЕКТ (дешёвый repeating-gradient, без background-size) --- */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15) 0px,
+        rgba(0, 0, 0, 0.15) 2px,
+        transparent 2px,
+        transparent 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* Бегущая световая полоса (без blur, только transform) */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    pointer-events: none;
+    z-index: 10000;
+    will-change: transform;
+    animation: scanline 6s linear infinite;
+}
+
+@keyframes scanline {
+    0%   { transform: translateY(-100vh); }
+    100% { transform: translateY(100vh); }
+}
+
+/* --- НАВИГАЦИЯ (ретро-кнопки) --- */
+nav {
+    position: absolute;
+    top: 30px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    z-index: 10;
+}
+
+nav a,
+nav .nav-link {
+    background: var(--panel-bg);
+    border: 4px solid #fff;
+    color: var(--text-main) !important;
+    padding: 12px 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-family: 'Press Start 2P', monospace;
+    box-shadow: 6px 6px 0px var(--neon-purple);
+    transform: translate(0, 0);
+    transition: transform 0.1s ease, box-shadow 0.1s ease,
+                background-color 0.1s ease, color 0.1s ease,
+                border-color 0.1s ease;
+    cursor: pointer;
+    line-height: 1;
+}
+
+nav a:hover,
+nav .nav-link:hover {
+    box-shadow: 0px 0px 0px transparent;
+    transform: translate(6px, 6px);
+    background: var(--contrast-cyan);
+    color: #000 !important;
+    border-color: #000;
+}
+
+/* Форма logout не ломает flex-раскладку навигации */
+.logout-form {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- КОРПУС ИГРОВОГО АВТОМАТА --- */
+.game-container {
+    background: var(--panel-bg);
+    border: 6px solid #fff;
+    box-shadow: 12px 12px 0px var(--neon-purple),
+                -12px -12px 0px var(--contrast-cyan),
+                0 0 40px rgba(217, 70, 239, 0.3);
+    padding: 45px 35px;
+    width: 100%;
+    max-width: 480px;
+    box-sizing: border-box;
+    margin-top: 80px;
+    position: relative;
+    will-change: transform, opacity;
+    animation: cabinetTurnOn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes cabinetTurnOn {
+    0%   { transform: scaleX(0) scaleY(0.01); opacity: 0; }
+    50%  { transform: scaleX(1) scaleY(0.01); opacity: 1; }
+    100% { transform: scaleX(1) scaleY(1);    opacity: 1; }
+}
+
+/* --- ГЛИТЧ-ЗАГОЛОВОК --- */
+h1 {
+    color: var(--contrast-yellow);
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 24px;
+    margin: 0 0 40px 0;
+    letter-spacing: 3px;
+    position: relative;
+    will-change: transform, text-shadow;
+    animation: fnfTitleGlitch 1.8s infinite steps(1);
+}
+
+@keyframes fnfTitleGlitch {
+    0%, 93%, 98%, 100% { text-shadow: 4px 4px 0px var(--neon-purple); transform: skew(0deg) scale(1); }
+    94% { text-shadow: -4px -4px 0px var(--contrast-cyan), 4px 4px 0px var(--neon-purple); transform: skew(5deg) scale(1.03); color: #fff; }
+    96% { text-shadow: 4px -4px 0px var(--accent-green), -4px 4px 0px var(--contrast-yellow); transform: skew(-5deg) scale(0.97); }
+    99% { text-shadow: -3px 3px 0px var(--contrast-cyan), 3px -3px 0px var(--accent-green); transform: translateX(3px); }
+}
+
+/* --- ПОЛЯ ФОРМЫ --- */
+form p {
+    margin: 0 0 30px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    color: var(--contrast-cyan);
+    text-transform: uppercase;
+    font-size: 11px;
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+    transition: color 0.15s ease;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"] {
+    background: #000000;
+    border: 4px solid var(--neon-purple);
+    padding: 16px;
+    color: #fff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+    transition: transform 0.1s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="password"]:focus {
+    border-color: var(--contrast-yellow);
+    box-shadow: 0 0 20px var(--contrast-yellow), inset 0 0 10px rgba(255, 255, 0, 0.3);
+    transform: scale(1.03);
+}
+
+p:focus-within label {
+    color: var(--contrast-yellow);
+    text-shadow: 2px 2px 0px #000;
+}
+
+/* --- КНОПКИ --- */
+form input[type="submit"],
+.btn-logout {
+    background: var(--contrast-yellow);
+    border: 4px solid #fff;
+    color: #000000;
+    font-weight: bold;
+    padding: 18px 20px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 15px;
+    box-shadow: 0 8px 0px #b3a200, 0 15px 20px rgba(0, 0, 0, 0.5);
+    will-change: transform, box-shadow;
+    transition: transform 0.1s ease, box-shadow 0.1s ease,
+                background-color 0.1s ease, border-color 0.1s ease;
+}
+
+form input[type="submit"]:hover,
+.btn-logout:hover {
+    background: #ffffff;
+    border-color: #000;
+    box-shadow: 0 8px 0px var(--contrast-cyan), 0 0 25px rgba(255, 255, 255, 0.6);
+}
+
+form input[type="submit"]:active,
+.btn-logout:active {
+    transform: translateY(8px);
+    box-shadow: 0 0px 0px transparent, 0 0 10px var(--contrast-cyan);
+}
+
+/* --- ССЫЛКИ И ОШИБКИ --- */
+.form-redirect {
+    color: var(--contrast-cyan);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 11px;
+    display: block;
+    margin-top: 30px;
+    text-align: center;
+    transition: color 0.1s ease;
+}
+
+.form-redirect:hover {
+    color: var(--contrast-yellow);
+    animation: linkVibrate 0.1s steps(2) infinite;
+}
+
+@keyframes linkVibrate {
+    0%   { transform: translate(2px, -1px); text-shadow: -2px 0 var(--neon-purple); }
+    100% { transform: translate(-2px, 1px); text-shadow: 2px 0 var(--contrast-cyan); }
+}
+
+/* Ошибки: анимируем только opacity, без text-shadow */
+.error-list,
+.message-alert {
+    color: var(--accent-green) !important;
+    font-size: 9px;
+    margin-top: 10px;
+    text-transform: uppercase;
+    list-style: none;
+    padding: 0;
+    text-shadow: 0 0 8px var(--accent-green);
+    will-change: opacity;
+    animation: errorFlicker 1s infinite alternate steps(2);
+}
+
+@keyframes errorFlicker {
+    0%   { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* --- ПРОФИЛЬ (opacity вместо filter) --- */
+.profile-card p {
+    font-size: 16px;
+    border-left: 6px solid var(--contrast-yellow);
+    padding: 12px 0 12px 24px;
+    margin: 0 0 30px 0;
+    color: #ffffff;
+    text-transform: uppercase;
+    opacity: 0;
+    will-change: opacity;
+    animation: smoothFadeIn 0.5s ease-out forwards;
+}
+
+.profile-card p strong {
+    color: var(--contrast-cyan);
+    display: inline-block;
+    margin-right: 12px;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+}
+
+.profile-card p:nth-child(1) { animation-delay: 0.15s; }
+.profile-card p:nth-child(2) { animation-delay: 0.45s; }
+
+@keyframes smoothFadeIn {
+    to { opacity: 1; }
+}
