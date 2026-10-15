@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="mission-meta">
+    <div class="meta-item"><span>Статус</span><strong>{{ mission_status }}</strong></div>
+    <div class="meta-item"><span>Временная отметка</span><strong>SOL {{ sol }}</strong></div>
+    <div class="meta-item"><span>Координаты</span><strong>{{ coordinates }}</strong></div>
+    <div class="meta-item"><span>Окружающая среда</span><strong>{{ environment.temperature }} | {{ environment.wind_speed }}</strong></div>
+</div>
+
+
+<div class="battery-container">
+    <span class="battery-label">РЕЗЕРВ ЭНЕРГИИ КОРПУСА:</span>
+    <div class="battery-bar-bg">
+        {% if battery < 20 %}
+            {% set color_class = 'bg-red' %}
+        {% elif battery < 50 %}
+            {% set color_class = 'bg-orange' %}
+        {% else %}
+            {% set color_class = 'bg-green' %}
+        {% endif %}
+        <div class="battery-bar-fill {{ color_class }}" style="width: {{ (battery / 100 * 100)|round }}%;">
+            {{ (battery / 100 * 100)|round }}%
+        </div>
+    </div>
+</div>
+
+
+<h2>Телеметрия системных узлов</h2>
+<div class="grid">
+    {% for system in subsystems %}
+        <div class="card
+            {% if system.status == 'ok' %}status-ok
+            {% elif system.status == 'warning' %}status-warning
+            {% elif system.status == 'critical' %}status-critical{% endif %}">
+
+            <h3>{{ system.name }}</h3>
+            <p>Эффективность узла: <strong>{{ system.value }}%</strong></p>
+
+            {% if system.status == 'critical' %}
+                <div class="badge badge-attention">⚠ ТРЕБУЕТ ВНИМАНИЯ</div>
+            {% endif %}
+
+            {% if system.value > 90 %}
+                <div class="badge badge-hot">🔥 перегрев</div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="empty-msg">
+            Связь потеряна. Все системы автономного модуля отключены.
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
