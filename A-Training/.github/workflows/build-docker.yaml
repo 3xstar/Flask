@@ -1,0 +1,23 @@
+name: Build and Publish image to Docker Hub
+on:
+   push:
+     branches:
+       - main
+     paths:
+       - 'Dockerfile'
+       - 'build-docker.yaml'
+       - '*.py'
+
+jobs:
+  publish-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: build image
+        run: docker build . -t 3xstar/a-training_test
+      - name: push image to Docker Hub
+        run: |
+          docker login -u 3xstar -p {{ secrets.DOCKER_HUB_TOKEN }}
+          docker push 3xstar/a-training
